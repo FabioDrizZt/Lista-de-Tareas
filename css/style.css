@@ -1,0 +1,14 @@
+h1 {
+  text-align: center;
+}
+input {
+  display: inline-block;
+}
+li {
+  display: flex;
+  justify-content: space-between;
+
+  .completed {
+    text-decoration: line-through;
+  }
+}
