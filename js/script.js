@@ -1,14 +1,7 @@
-const tasks = [
-  "Preparar un desfile de moda",
-  "Cuidar a sus mascotas",
-  "Hacer ejercicio en su gimnasio",
-  "Ir de compras para actualizar su guardarropa",
-  "Estudiar para su próxima aventura",
-  "Ayudar a su comunidad en proyectos voluntarios",
-  "Organizar una fiesta de cumpleaños",
-  "Diseñar ropa y accesorios",
-  "Viajar por el mundo en su jet privado",
-  "Participar en competencias deportivas",
+let tasks = [
+  { name: "Preparar un desfile de moda", completed: false },
+  { name: "Cuidar a sus mascotas", completed: false },
+  { name: "Hacer ejercicio en su gimnasio", completed: false },
 ];
 const taskInput = document.getElementById("taskInput");
 const addButton = document.getElementById("addButton");
@@ -20,19 +13,29 @@ searchInput.addEventListener("input", searchTasks);
 taskInput.addEventListener("keypress", (event) => {
   if (event.key === "Enter") addTask();
 });
+window.addEventListener("load", () => {
+  const savedTasks = localStorage.getItem("tasks");
+  if (savedTasks) {
+    tasks = JSON.parse(savedTasks);
+  }
+  showTasks();
+});
 
 function addTask() {
   if (taskInput.value.trim().length !== 0) {
-    tasks.push(taskInput.value.trim());
+    tasks.push({ name: taskInput.value.trim(), completed: false });
   }
   taskInput.value = "";
+  localStorage.setItem("tasks", JSON.stringify(tasks));
   showTasks();
 }
 const showTasks = (lista = tasks) => {
   taskList.innerHTML = "";
   lista.forEach((task, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `<span key=${index}>${task}</span>
+    li.innerHTML = `<span class=${
+      task.completed ? "completed" : null
+    } key=${index}>${task.name}</span>
     <div>
       <button onclick="editTask(${index})"> 🖋 </button>
       <button onclick="removeTask(${index})"> ❌ </button>
@@ -54,7 +57,9 @@ const editTask = (index) => {
 
 const toggleTask = (index) => {
   const span = document.querySelector(`span[key="${index}"]`);
+  tasks[index].completed = !tasks[index].completed;
   span.classList.toggle("completed");
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
 function searchTasks() {
@@ -63,5 +68,3 @@ function searchTasks() {
   );
   showTasks(filteredTasks);
 }
-
-showTasks();
